@@ -177,7 +177,7 @@ build() {
 	# FSH Tree
 	echo -n "Populating: filesystem"
 	for d in bin dev etc lib root run home proc media sbin sys \
-		usr/bin usr/sbin usr/share var/log var/cache var/lib
+		usr/bin usr/sbin usr/share var/log var/cache var/lib var/run
 	do
 		mkdir -p ${rootfs}/${d}
 	done
@@ -219,10 +219,10 @@ build() {
 	cp -a ${tools}/kilo ${rootfs}/usr/bin; check
 	
 	# Ncursesw && dialog for sebos and additional tools
-	install_files "/lib/libncursesw.so*" "/usr/bin/dialog"
+	install_files "/lib/libncursesw.so*" "/lib/libtinfo.so*"
 	mkdir -p ${rootfs}/usr/share/terminfo/l
 	cp /usr/share/terminfo/l/linux ${rootfs}/usr/share/terminfo/l
-	cp /etc/dialogrc ${rootfs}/etc
+	install_files "/usr/bin/dialog" "/etc/dialogrc" 
 	
 	# /lib/libseb.sh & sebos config tool
 	echo -n "Installing: /lib/libseb.sh"
@@ -238,7 +238,7 @@ build() {
 	touch ${rootfs}/var/lib/packages
 	for pkg in $(ls $sebpkgs); do
 		echo -n $(colorize 035 "Installing package:"); info 036 "$pkg"
-		. ${packages}/${pkg}
+		. ${sebpkgs}/${pkg}
 		seb_install; echo "$pkg|$desc" >> ${rootfs}/var/lib/packages
 	done
 	

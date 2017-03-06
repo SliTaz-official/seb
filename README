@@ -47,12 +47,12 @@ init command you can modify and add extra files in the embfs/ folder:
 
 Build process & environment
 --------------------------------------------------------------------------------
-Seb is not compliling any tools, it will use Slitaz standard executable and
-libraries - Seb-os is created on top of SliTaz. Packages installed in seb must
+Seb is not compliling any tools, it will use SliTaz standard executable and
+libraries - Seb OS is created on top of SliTaz. Packages installed in seb must
 be on the build host, this is the case for the full basic sysem.
 
 Seb will build the custom operating system into the current directory or it
-will read a seb.conf file to know the path to the work/build folder. Seb will
+will read a build.conf file to know the path to the work/build folder. Seb will
 use these directories to work:
 
   * rootfs/     The root filsysytem of the compressed operationg system
@@ -69,7 +69,15 @@ and the kernel in the /boot tree and a entry in Grub configuration file. SliTaz
 provide a nifty little tools for frugal install:
 
   # frugal path/to/image.iso
-  
+
+Grub entry will need a rdinit=/sbin/init on the kernel line. Here is an example:
+
+# Seb OS Frugal on sdb1
+title SliTaz Embedded OS (frugal)
+root (hd0,0)
+kernel /boot/frugal/bzImage root=/dev/null rdinit=/sbin/init
+initrd /boot/frugal/rootfs.gz
+
 
 Virtual disk
 --------------------------------------------------------------------------------
@@ -93,6 +101,9 @@ also a learning tool. Seb let you build sandbox os and rock solid web server.
   * seb             SliTaz Embedded operation system builder
   * tools/          Various tools included or used to build an OS
   * packages/       SliTaz Embedded packages
+
+We dont want to much automation, let people create ther own OS in there
+own way but provide some usefull function to help :-)
   
 
 Gettext i18n

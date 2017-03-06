@@ -1,0 +1,8 @@
+# SliTaz Embedded package
+
+desc="NCurses Disk Usage"
+deps=""
+
+seb_install() {
+	install_files "/usr/bin/ncdu"
+}

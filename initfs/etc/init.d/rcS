@@ -9,15 +9,15 @@ colorize 33 "Processing /etc/init.d/rcS..."
 
 # Mount filesystems
 echo "Mounting filesystems..."
-/bin/mount proc
 /bin/mount -a
+/bin/mount --bind /run /var/run
 
 # Populate /dev + config hotplug
 echo "Population /dev and config hotplug helper..."
 /bin/touch /dev/mdev.log; /sbin/mdev -s
 echo "/sbin/mdev" >/proc/sys/kernel/hotplug
 
-# Mount vdisk in Qemu or vdisk=/dev/sdb1:/path/to/seb-home.img
+# Mount vdisk in Qemu or vdisk=/dev/sdb1:/path/to/sebhome.img
 if blkid | fgrep -q "SebOShome"; then
 	colorize 036 "Mounting seb OS virtual disk on: /home"
 	mount /dev/sda /home
