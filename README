@@ -36,13 +36,20 @@ Goals and features
 
 Quickstart Guide:
 --------------------------------------------------------------------------------
-Build a distro in a few commands. Install seb or run it from source tree. After the
-init command you can modify and add extra files in the embfs/ folder:
+Build a distro in a few commands. Install seb or run it from source tree:
 
-  # mkdir my-seb; cd my-seb
+  # mkdir seb-os; cd seb-os
   # seb init
+
+You can now modify and add extra files in the embfs/ folder. Let's include
+sqlite package and build the ISO image:
+
   # seb -p sqlite --add
   # seb build
+
+If you want to test the OS, you can install Qemu emulator and run:
+
+  # seb -e
 
 To get a list of commands, just run seb without arguments: $ seb
 
@@ -63,6 +70,30 @@ use these directories to work:
   * sebpkgs/    The packages to install into the distro
 
 
+Linux kernel and modules
+-------------------------------------------------------------------------------
+By default seb will use the running kernel and a custom one can be used with
+the option --linux= or with a build.conf file. There is no kernel modules
+support in seb, it would mean having kmod, liblzma, zlib and a bunch of files
+in /lib/modules. This is not what we want in a small customized OS. To be fast
+at boot we rommended you to build your own linux kernel with SliTaz utils or
+from source like expained in the Scratchbook with modules built-in the kernel.
+
+To use a custom Linux kernel with seb builder:
+
+  # seb build --linux=/path/to/bzImage
+
+To cook a custom kernel with SliTaz cookutils:
+
+  # cooklinux usage
+  
+After the kernel is built, you will have a SliTaz packages and all generated
+files in /home/slitaz/src/linux-XXX. The kernel compressed image (bzImage) can
+be found inthe arch/folder. Example for linux 4.9.10 build for X86 platform:
+
+/home/slitaz/src/linux-4.9.10/arch/x86/boot/bzImage
+
+
 Frugal install
 --------------------------------------------------------------------------------
 A frugal installation let you boot your seb system without any installation and
@@ -77,7 +108,7 @@ Grub entry will need a rdinit=/sbin/init on the kernel line. Here is an example:
 # Seb OS Frugal on sdb1
 title SliTaz Embedded OS (frugal)
 root (hd0,0)
-kernel /boot/frugal/bzImage root=/dev/null rdinit=/sbin/init
+kernel /boot/frugal/bzImage root=/dev/null rdinit=/sbin/init loglevel=5
 initrd /boot/frugal/rootfs.gz
 
 
@@ -91,12 +122,13 @@ umount disk:
   # seb disk
 
 
-Source code and devel guidelines
+Source code and developers guidelines
 --------------------------------------------------------------------------------
 Note even need to say that this tool MUST stay simple, fast, elegant and fun.
 We dont want a super tool for complex system building, we have tazlito and Tiny
 SliTaz for that. Seb is as close as possible of SliTaz first build, seb is
-also a learning tool. Seb let you build sandbox os and rock solid web server.
+also a learning tool. Seb let you build sandbox os from scratch and rock solid 
+hardware specific servers.
 
   * examples/       Various fs and scripts examples
   * initfs/         Initial files used to create the system
@@ -105,8 +137,8 @@ also a learning tool. Seb let you build sandbox os and rock solid web server.
   * tools/          Various tools included or used to build an OS
   * packages/       SliTaz Embedded packages database
 
-We dont want to much automation, let people create ther own OS in there
-own way but provide some usefull function to help :-)
+We dont want to much automation, let people create ther own OS in there own way
+but provide some usefull function to help :-)
   
 
 Gettext i18n

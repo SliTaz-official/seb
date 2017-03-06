@@ -55,6 +55,7 @@ help() {
 $(colorize 35 "SliTaz Embedded Builder")
 
 $(boldify "Usage:") $(basename $0) [command] [--opts]
+$(boldify "Manuel:") man seb
 
 $(boldify "Commands:")
   -h  help       Display this short built-in help
@@ -300,7 +301,7 @@ display display.txt
 default seb
 label seb
 	kernel /boot/bzImage
-	append initrd=/boot/rootfs.gz rw root=/dev/null rdinit=/sbin/init
+	append initrd=/boot/rootfs.gz rw root=/dev/null rdinit=/sbin/init loglevel=5
 implicit 0
 prompt 1
 timeout 40
