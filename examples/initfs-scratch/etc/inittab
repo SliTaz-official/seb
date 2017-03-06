@@ -1,0 +1,11 @@
+# /etc/inittab: init configuration for SliTaz GNU/Linux.
+
+::sysinit:/etc/init.d/rcS
+
+# getty respawn shell invocations for selected ttys
+tty1::respawn:/sbin/getty 38400 tty1
+tty2::askfirst:-/bin/sh
+
+::ctrlaltdel:/bin/umount -a -r
+::ctrlaltdel:/sbin/reboot
+

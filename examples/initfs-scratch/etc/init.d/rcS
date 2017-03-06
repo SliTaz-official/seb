@@ -1,0 +1,21 @@
+#! /bin/sh
+#
+# Main boot script for your SliTaz Embedded System
+#
+. /lib/libseb.sh
+. /etc/seb-os.conf
+
+colorize 33 "Processing /etc/init.d/rcS..."
+
+/bin/mount proc
+/bin/mount -a
+
+/sbin/mdev -s
+/bin/hostname ${host_name}
+
+/sbin/ifconfig lo 127.0.0.1 up
+/sbin/loadkmap < /usr/share/kmap/default
+
+sleep 1
+echo -e "\nWelcome to SliTaz Embedded System"
+boldify "Login: root"
