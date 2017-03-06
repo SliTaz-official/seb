@@ -15,7 +15,7 @@ for opt in "$@"; do
 	esac
 done
 
-# Exit if command ruturn 1
+# Exit if command returns 1
 check() {
 	case "$?" in
 		0) info 32 "Done" ;;

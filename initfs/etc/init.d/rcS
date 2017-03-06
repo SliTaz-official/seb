@@ -13,7 +13,7 @@ echo "Mounting filesystems..."
 /bin/mount --bind /run /var/run
 
 # Populate /dev + config hotplug
-echo "Population /dev and config hotplug helper..."
+echo "Populating /dev and config hotplug helper..."
 /bin/touch /dev/mdev.log; /sbin/mdev -s
 echo "/sbin/mdev" >/proc/sys/kernel/hotplug
 

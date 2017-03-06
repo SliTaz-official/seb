@@ -1,8 +1,8 @@
 #!/bin/sh
 #
-# sebos: SliTaz Embedded OS - A tool to help getting hand on a Seb-OS
+# sebos: SliTaz Embedded OS - A tool to help getting hands on a Seb-OS
 # system with some cmdline and Ncurses configs functions. The main goal
-#  is to manage a web server. Without gettext dependencies please :-)
+# is to manage a web server. Without gettext dependencies please :-)
 #
 # Copyright (C) 2017 SliTaz GNU/Linux - BSD License
 # Author: Christophe Lincoln <pankso@slitaz.org>
@@ -36,7 +36,7 @@ $(colorize 35 'Usage:') $(basename $0) [command] [file|daemon]
 $(colorize 035 'Commands:')
 
   -c  config    Configure the system
-  -i  info      Seb system informations
+  -i  info      Seb system information
   -d  daemon    Run/kill a daemon
   -p  packages  List installed packages
   -v  view      File viewer
@@ -51,7 +51,7 @@ Hostname            : $host_name
 Seb build date      : $build_date
 SliTaz release      : $seb_os_release
 Seb OS config       : /etc/seb.conf
-Netwotk interface   : $network_interface
+Network interface   : $network_interface
 Installed packages  : $(cat /var/lib/packages | wc -l)
 Running processes   : $(ps -o pid | wc -l)
 System time         : $(date)
