@@ -1,0 +1,13 @@
+# /etc/profile: system-wide config for the Bourne shells
+
+PATH="/usr/sbin:/usr/bin:/sbin:/bin:$HOME/.local/bin"
+LD_LIBRARY_PATH="/usr/lib:/lib"
+
+if [ $(id -u) -eq 0 ]; then
+  PS1='\e[1m\u@\h:\w\#\e[m '
+else
+  PS1='\e[1m\u@\h:\w\$\e[m '
+fi
+
+export PATH LD_LIBRARY_PATH PS1 ignoreeof
+umask 022

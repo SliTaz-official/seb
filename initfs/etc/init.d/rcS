@@ -1,0 +1,39 @@
+#! /bin/sh
+#
+# Main boot script for your SliTaz Embedded System
+#
+. /lib/libseb.sh
+. /etc/seb.conf
+
+colorize 33 "Processing /etc/init.d/rcS..."
+
+# Mount filesystems
+echo "Mounting filesystems..."
+/bin/mount proc
+/bin/mount -a
+
+# Populate /dev + config hotplug
+echo "Population /dev and config hotplug helper..."
+/bin/touch /dev/mdev.log; /sbin/mdev -s
+echo "/sbin/mdev" >/proc/sys/kernel/hotplug
+
+# Mount vdisk in Qemu or vdisk=/dev/sdb1:/path/to/seb-home.img
+if blkid | fgrep -q "SebOShome"; then
+	colorize 036 "Mounting seb OS virtual disk on: /home"
+	mount /dev/sda /home
+fi
+
+# Hostname
+echo "Setting hostname to: $(colorize 033 $host_name)"
+/bin/hostname ${host_name}
+
+# Networking
+/sbin/ifconfig lo 127.0.0.1 up
+
+# Load dumped keymap
+echo "Loading keyboard map..."
+/sbin/loadkmap < /usr/share/kmap/default
+
+echo ""
+colorize 035 "Welcome to SliTaz Embedded System"
+boldify "Login: root"
