@@ -1,36 +1,36 @@
 SEB - SliTaz Embedded OS
 ================================================================================
 
-Back to the root with this cmdline tool to build realy small SliTaz text mode 
-system for hacking, learning and developing small Linux operating system.
+Back to the root with this cmdline tool to build really small SliTaz text mode 
+systems for hacking, learning and developing small Linux operating systems.
 
-Seb builder will init a minimal set of files that you can customise at your
+Seb builder will init a minimal set of files that you can customise to your
 needs, install Busybox and create a compressed rootfs that can boot in frugal
 mode as well as an ISO image to use with Qemu. Other boot methods can be used
 with a bit a knowledge (web boot). The system is built in a single rootfs
-folder wich can be used as chroot environment.
+folder which can be used as a chroot environment.
 
-SliTaz embedded provide all basic Linux command, a powerfull web server with
-CGI support and a set of home made tools for administration and debuging. Seb
-is easy too use, follow the KISS principle. Please use SliTaz Bugs System
-for any bug report. There is no wifi support and it's not bug :-)
+SliTaz embedded provides all basic Linux commands, a powerful web server with
+CGI support and a set of home made tools for administration and debugging. Seb
+is easy too use, follows the KISS principle. Please use SliTaz Bugs System
+for any bug reports. There is no wifi support and it's not bug :-)
 
 If you want to learn more about the basics of a Linux operating system you
-can have a look to SliTaz Scratchbook wich explain step by step the creation of
-SliTaz back in 2006. This tool was published in 2017, ten years after the first
+can have a look at the SliTaz Scratchbook which explains step by step the creation 
+of SliTaz back in 2006. This tool was published in 2017, ten years after the first
 cooking public release :-)
 
-Seb system will fit into a ~4MB ISO image for the realy base system, up to 10Mb
-or more, but without X. If you are seraching for an even more small SliTaz 
+Seb system will fit into a ~4MB ISO image for the really base system, up to 10Mb
+or more, but without X. If you are searching for an even more smaller SliTaz 
 version, please have a look to Tiny SliTaz: http://tiny.slitaz.org
 
 
 Goals and features
 -------------------------------------------------------------------------------
 
-  * Built fast and light servers or mediabox
+  * Build fast and light servers or mediabox
   * Nice way to learn about creating Linux OS
-  * Built small rescue systems in frugal mode
+  * Build small rescue systems in frugal mode
   * Fun playground for hackers and kids
 
 
@@ -56,28 +56,28 @@ To get a list of commands, just run seb without arguments: $ seb
 
 Build process & environment
 --------------------------------------------------------------------------------
-Seb is not compliling any tools, it will use SliTaz standard executable and
+Seb does not compile any tools, it will use a SliTaz standard executable and
 libraries - Seb OS is created on top of SliTaz. Packages installed in seb must
-be on the build host, this is the case for the full basic sysem.
+be on the build host, this is the case for the full basic system.
 
 Seb will build the custom operating system into the current directory or it
 will read a build.conf file to know the path to the work/build folder. Seb will
 use these directories to work:
 
-  * rootfs/     The root filsysytem of the compressed operationg system
+  * rootfs/     The root filesystem of the compressed operating system
   * rootiso/    Root of the ISO image with rootfs.gz, bootloader and kernel
-  * sebfs/      Custom files overwritting file into the rootfs
+  * sebfs/      Custom files overwriting files in the rootfs
   * sebpkgs/    The packages to install into the distro
 
 
 Linux kernel and modules
 -------------------------------------------------------------------------------
 By default seb will use the running kernel and a custom one can be used with
-the option --linux= or with a build.conf file. There is no kernel modules
+the option --linux= or with a build.conf file. There are no kernel modules
 support in seb, it would mean having kmod, liblzma, zlib and a bunch of files
 in /lib/modules. This is not what we want in a small customized OS. To be fast
-at boot we rommended you to build your own linux kernel with SliTaz utils or
-from source like expained in the Scratchbook with modules built-in the kernel.
+at boot we recommend you to build your own linux kernel with SliTaz utils or
+from source like explained in the Scratchbook with modules built-in the kernel.
 
 To use a custom Linux kernel with seb builder:
 
@@ -87,19 +87,19 @@ To cook a custom kernel with SliTaz cookutils:
 
   # cooklinux usage
   
-After the kernel is built, you will have a SliTaz packages and all generated
+After the kernel is built, you will have SliTaz packages and all generated
 files in /home/slitaz/src/linux-XXX. The kernel compressed image (bzImage) can
-be found inthe arch/folder. Example for linux 4.9.10 build for X86 platform:
+be found in the arch/folder. Example for linux 4.9.10 built for X86 platform:
 
 /home/slitaz/src/linux-4.9.10/arch/x86/boot/bzImage
 
 
 Frugal install
 --------------------------------------------------------------------------------
-A frugal installation let you boot your seb system without any installation and
-with the all system running in memory. Basicaly you need to have the rootfs.gz
-and the kernel in the /boot tree and a entry in Grub configuration file. SliTaz
-provide a nifty little tools for frugal install:
+A frugal installation lets you boot your seb system without any installation and
+with the all system running in memory. Basically you need to have the rootfs.gz
+and the kernel in the /boot tree and a entry in a Grub configuration file. SliTaz
+provides nifty little tools for frugal install:
 
   # frugal path/to/image.iso
 
@@ -114,15 +114,15 @@ initrd /boot/frugal/rootfs.gz
 
 Virtual disk
 --------------------------------------------------------------------------------
-A virtual disk let you have a persitstant filesystem when using Qemu or booting,
-in frugal mode (recommended). It is useful when developping/debugging scripts 
-that runs into a seb-os or to host web server virtual hosts. Create, mount or
+A virtual disk lets you have a persistent filesystem when using Qemu or booting
+in frugal mode (recommended). It is useful when developing/debugging scripts 
+that run in a seb-os or to host web server virtual hosts. Create, mount or
 umount disk:
 
   # seb disk
 
-In frugal or live USB mode, seb can also use a sebhome.img to have persitant 
-files even with the full system runnng in memory. To get /home automounted at 
+In frugal or live USB mode, seb can also use a sebhome.img to have persistent 
+files even with the full system running in memory. To get /home automounted at 
 boot time, you can use this kernel cmdline option: 
 
   home=/dev/sdb1:/path/to/sebhome.img
@@ -130,26 +130,26 @@ boot time, you can use this kernel cmdline option:
 
 Source code and developers guidelines
 --------------------------------------------------------------------------------
-Note even need to say that this tool MUST stay simple, fast, elegant and fun.
-We dont want a super tool for complex system building, we have tazlito and Tiny
-SliTaz for that. Seb is as close as possible of SliTaz first build, seb is
-also a learning tool. Seb let you build sandbox os from scratch and rock solid 
+Note need to say that this tool MUST stay simple, fast, elegant and fun.
+We don't want a super tool for complex system building, we have tazlito and Tiny
+SliTaz for that. Seb is as close as possible to SliTaz's first build, seb is
+also a learning tool. Seb lets you build a sandbox os from scratch and rock solid 
 hardware specific servers.
 
   * examples/       Various fs and scripts examples
   * initfs/         Initial files used to create the system
   * seb             SliTaz Embedded operation system builder
-  * libseb.sh       Seb shared functions install on host and in seb OS
+  * libseb.sh       Seb shared functions installed on host and in seb OS
   * tools/          Various tools included or used to build an OS
   * packages/       SliTaz Embedded packages database
 
-We dont want to much automation, let people create ther own OS in there own way
-but provide some usefull function to help :-)
+We don't want to much automation, let people create their own OS in their own way
+but provide some useful functions to help :-)
   
 
 Gettext i18n
 --------------------------------------------------------------------------------
-No i18n with gettext in seb tools since seb distro dont include gettext-base.
+No i18n with gettext in seb tools since seb distro doesn't include gettext-base.
 
 
 ================================================================================
