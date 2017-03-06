@@ -1,0 +1,202 @@
+#!/bin/sh
+#
+# sebos: SliTaz Embedded OS - A tool to help getting hand on a Seb-OS
+# system with some cmdline and Ncurses configs functions. The main goal
+#  is to manage a web server. Without gettext dependencies please :-)
+#
+# Copyright (C) 2017 SliTaz GNU/Linux - BSD License
+# Author: Christophe Lincoln <pankso@slitaz.org>
+#
+
+# /lib/libseb.sh && seb.conf
+if [ -f "../libseb.sh" ]; then
+	. ../libseb.sh
+else
+	if ! . /lib/libseb.sh; then
+		echo "Can't source any: libseb.sh"; exit 1
+	fi
+fi
+[ -f "/etc/seb.conf" ] && . /etc/seb.conf
+
+title="SliTaz Embedded OS"
+doc="/usr/share/doc/seb-os.txt"
+packages="/var/lib/packages"
+tmpdir="/tmp/$(basename $0)"
+tmp="$tmpdir/$$"
+height='20'
+width='72'
+
+# Functions
+
+help() {
+	cat << EOT
+
+$(colorize 35 'Usage:') $(basename $0) [command] [file|daemon]
+
+$(colorize 035 'Commands:')
+
+  -c  config    Configure the system
+  -i  info      Seb system informations
+  -d  daemon    Run/kill a daemon
+  -p  packages  List installed packages
+  -v  view      File viewer
+      doc       Built-in documentation
+
+EOT
+}
+
+info() {
+	cat << EOT
+Hostname            : $host_name
+Seb build date      : $build_date
+SliTaz release      : $seb_os_release
+Seb OS config       : /etc/seb.conf
+Netwotk interface   : $network_interface
+Installed packages  : $(cat /var/lib/packages | wc -l)
+Running processes   : $(ps -o pid | wc -l)
+System time         : $(date)
+EOT
+}
+
+read_on() {
+	echo -n "Press ENTER to continue"; read
+}
+
+quit() {
+	rm -rf ${tmpdir}; exit 0
+}
+
+#
+# GUI Functions
+#
+
+# Display any command output: exec_box [title] [command]
+exec_box() {
+	dialog --cr-wrap --title "{ $1 }" \
+		--ok-label "Close" --msgbox "$($2)" ${height} ${width}
+}
+
+# Display a text file: text_box [title] [file]
+text_box() {
+	dialog --cr-wrap --title "{ $1 }" \
+		--exit-label "Close" --textbox "$2" ${height} ${width}
+}
+
+# Show message and percentage on a gauge dialog
+gauge_msg() {
+	sleep 1; echo -e "XXX\n$1\n$MSG\nXXX"
+}
+
+# Set root passwd
+root_passwd() {
+	dialog --title "{ Root Password }" --colors \
+		--inputbox "\nEnter new password for root" \
+		12 $width 2>${tmp}
+	passwd=$(cat $tmp)
+	[ -z "$passwd" ] && return 0
+	echo "root:$passwd" | chpasswd --md5 >/dev/null
+}
+
+# Add a new user
+add_user() {
+	dialog --title "{ Add User }" --colors \
+		--inputbox "\nEnter login name for the new \Zb\Z4user" 12 ${width} 2>${tmp}
+	user=$(cat $tmp)
+	[ ! "$user" ] && return 0
+
+	dialog --title "{ Add User }" --colors \
+		--inputbox "\nEnter password for user \Zb\Z4${user}" 12 ${width} 2>${tmp}
+	passwd=$(cat $tmp)
+	[ ! "$passwd" ] && return 0
+
+	adduser -D -g "SliTaz User" ${user}
+	echo "$user:$passwd" | chpasswd --md5 2>/dev/null
+}
+
+set_date() {
+	echo ""; echo "Old date: $(date)"
+	rdate -s tick.greyware.com 2>/dev/null
+	echo "New date: $(date)"; echo ""
+}
+
+# Main Dialog menu
+main_box() {
+	mkdir -p ${tmpdir}
+	dialog \
+		--clear --title "{ $title }" \
+		--ok-label "Exec" --cancel-label "Quit" \
+		--menu "" ${height} ${width} 14 \
+"info"        "Seb OS info and status" \
+"add-user"    "Add a new user to Seb-OS" \
+"root-passwd" "Change root password" \
+"set-date"    "Set system date from the web" \
+"packages"    "List installed packages" \
+"commands"    "Display sebos commands" \
+"quit"        "Exit from SliTaz Config" 2>${tmp}
+
+	# Handle options
+	case "$?" in
+		1|255) quit ;;
+	esac
+
+	# Handle actions
+	action=$(cat $tmp)
+	case "$action" in
+		info)        exec_box "Seb OS Info" info ;;
+		add-user)    add_user ;;
+		root-passwd) root_passwd ;;
+		set-date)    clear; set_date; read_on ;;
+		packages)    clear; ${0} -p; read_on ;;
+		commands)    clear; ${0} help; read_on ;;
+		quit)        quit ;;
+	esac
+}
+
+#
+# Handle commands
+#
+
+case "$1" in
+
+	-c|config)
+		check_root
+		while true; do
+			main_box
+		done ;;
+	
+	-i|info)
+			title "SliTaz Embedded OS"
+			info; footer ;;
+	
+	-d|daemon)
+		# Start/stop Busybox httpd server
+		#pid=$(ps | grep "httpd" | grep -v "grep" | awk '{print $1}')
+		daemon="$2"
+		pid=$(pidof $daemon)
+		if [ "$pid" != "" ]; then
+			echo -n "Starting $daemon daemon..."
+			case "$daemon" in
+				httpd)
+					httpd -u 80:80 -r "Seb OS Authentication" ;;
+			esac; status
+		else
+			echo -n "Stopping $daemon daemon..."
+			kill ${pid}; status
+		fi ;;
+	
+	-p|packages)
+		title "Installed packages"
+		IFS="|"
+		cat /var/lib/packages | while read pkg desc; do
+			echo -n "$(colorize 036 $pkg)"; indent 20 "$desc"
+		done; unset IFS; footer ;;
+	
+	-v|view) text_box "$(basename $2)" ${2} ;;
+		
+	*_*) $@ ;; # Execute any fun_ctions
+	
+	*|help) help ;;
+esac
+
+# Clean exit
+rm -rf ${tmpdir} && exit 0
