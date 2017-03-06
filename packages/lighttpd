@@ -1,0 +1,9 @@
+# SliTaz Embedded package
+
+desc="LightTPD Web server"
+deps=""
+
+seb_install() {
+	install_files "/usr/sbin/lighttpd" "/usr/lib/libpcre.so*"
+	mkdir -p ${rootfs}/etc/lighttpd
+}

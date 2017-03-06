@@ -1,0 +1,8 @@
+# SliTaz Embedded package
+
+desc="Text mode file manager"
+deps=""
+
+seb_install() {
+	install_files "/usr/bin/clex" "/usr/bin/cfg-clex" "/lib/libtinfo*"
+}
