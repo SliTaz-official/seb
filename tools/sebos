@@ -40,7 +40,6 @@ $(colorize 035 'Commands:')
   -d  daemon    Run/kill a daemon
   -p  packages  List installed packages
   -v  view      File viewer
-      doc       Built-in documentation
 
 EOT
 }
@@ -94,7 +93,7 @@ root_passwd() {
 		12 $width 2>${tmp}
 	passwd=$(cat $tmp)
 	[ -z "$passwd" ] && return 0
-	echo "root:$passwd" | chpasswd --md5 >/dev/null
+	echo "root:$passwd" | chpasswd --md5 2>/dev/null
 }
 
 # Add a new user
@@ -131,6 +130,7 @@ main_box() {
 "root-passwd" "Change root password" \
 "set-date"    "Set system date from the web" \
 "packages"    "List installed packages" \
+"daemons"    "List installed daemons" \
 "commands"    "Display sebos commands" \
 "quit"        "Exit from SliTaz Config" 2>${tmp}
 
@@ -147,6 +147,7 @@ main_box() {
 		root-passwd) root_passwd ;;
 		set-date)    clear; set_date; read_on ;;
 		packages)    clear; ${0} -p; read_on ;;
+		daemons)     clear; ${0} -d; read_on ;;
 		commands)    clear; ${0} help; read_on ;;
 		quit)        quit ;;
 	esac
@@ -168,23 +169,39 @@ case "$1" in
 			title "SliTaz Embedded OS"
 			info; footer ;;
 	
-	-d|daemon)
-		# Start/stop Busybox httpd server
-		#pid=$(ps | grep "httpd" | grep -v "grep" | awk '{print $1}')
-		daemon="$2"
-		pid=$(pidof $daemon)
-		if [ "$pid" != "" ]; then
-			echo -n "Starting $daemon daemon..."
-			case "$daemon" in
-				httpd)
-					httpd -u 80:80 -r "Seb OS Authentication" ;;
-			esac; status
-		else
-			echo -n "Stopping $daemon daemon..."
-			kill ${pid}; status
+	-d|daemon*)
+		# Handle daemons
+		daemons="daemons"
+		if [ ! "$2" ]; then
+			title "Installed daemons"
+			for d in $(ls $daemons); do
+				. ${daemons}/${d}
+				echo -n "${d}"; indent 20 "$desc"; unset desc
+			done; footer "Use: $(basename $0) -d [daemon] [--start|--kill|--info]"
+			exit 0
+		fi
+		if [ "$kill" ]; then
+			pid=$(pidof $2)
+			. ${daemons}/${2}
+			echo -n "Killing: $desc (pid $pid)"
+			kill ${pid} 2>/dev/null; status
+		fi
+		if [ "$start" ]; then
+			. ${daemons}/${2}
+			echo -n "Starting: $desc"
+			start; status
+		fi
+		if [ "$info" ]; then
+			. ${daemons}/${2}
+			pid=$(pidof $2)
+			[ ! "$pid" ] && pid="none"
+			title "$desc"
+			echo "$(colorize 036 Pidof $2:) $pid"
+			[ "$pid" != "" ] && ps | grep "$pid" | grep -v "grep" | grep -v "sebos"
+			footer
 		fi ;;
 	
-	-p|packages)
+	-p|package*)
 		title "Installed packages"
 		IFS="|"
 		cat /var/lib/packages | while read pkg desc; do

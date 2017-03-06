@@ -1,0 +1,5 @@
+#!/bin/sh
+desc="Busybox web server"
+start() {
+	/usr/sbin/httpd -u 80:80 -r "Seb OS Authentication"
+}

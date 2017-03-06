@@ -24,7 +24,7 @@ if blkid | fgrep -q "SebOShome"; then
 fi
 
 # Parse kernel cmdline options
-for opt in $(cat cmdline); do
+for opt in $(cat /proc/cmdline); do
 	case "$opt" in
 		home=*)
 			colorize 036 "Mounting sebhome.img on: /home"
