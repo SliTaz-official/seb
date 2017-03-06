@@ -6,4 +6,17 @@ deps=""
 seb_install() {
 	install_files "/usr/sbin/lighttpd" "/usr/lib/libpcre.so*"
 	mkdir -p ${rootfs}/etc/lighttpd
+	
+	# Configs
+	cp -f /etc/lighttpd/lighttpd.conf ${rootfs}/etc/lighttpd
+	cp -f /etc/lighttpd/vhosts.conf ${rootfs}/etc/lighttpd
+	
+	# Daemon start function
+	cat > ${rootfs}/etc/daemons/lighttpd << EOT
+#!/bin/sh
+desc="LightTPD web server"
+start() {
+	/usr/sbin/lighttpd -f /etc/lighttpd/lighttpd.conf
+}
+EOT
 }
