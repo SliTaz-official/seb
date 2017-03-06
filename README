@@ -121,6 +121,12 @@ umount disk:
 
   # seb disk
 
+In frugal or live USB mode, seb can also use a sebhome.img to have persitant 
+files even with the full system runnng in memory. To get /home automounted at 
+boot time, you can use this kernel cmdline option: 
+
+  home=/dev/sdb1:/path/to/sebhome.img
+
 
 Source code and developers guidelines
 --------------------------------------------------------------------------------

@@ -365,7 +365,7 @@ packages_handler() {
 # Handle vdisk: create, check, mount, umount
 vdisk_hanler() {
 	title "SEB Virtual disk"
-	vsize=40960
+	vsize=60
 	root=${vdisk%.img}
 	
 	# Info or create
@@ -374,7 +374,7 @@ vdisk_hanler() {
 		info 035 "$(du -mhs $vdisk | awk '{print $1}')"
 	else
 		echo "Creating virtual disk image..."
-		dd if=/dev/zero of=${vdisk} bs=1k count=${vsize}
+		dd if=/dev/zero of=${vdisk} bs=1M count=${vsize}
 		action "Creating ext3 filesystem..."; echo
 		mkfs.ext3 -L "SebOShome" ${vdisk}
 	fi

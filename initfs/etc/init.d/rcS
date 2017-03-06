@@ -23,6 +23,23 @@ if blkid | fgrep -q "SebOShome"; then
 	mount /dev/sda /home
 fi
 
+# Parse kernel cmdline options
+for opt in $(cat cmdline); do
+	case "$opt" in
+		home=*)
+			colorize 036 "Mounting sebhome.img on: /home"
+			val=${opt#home=}
+			device=$(echo $val | cut -d ":" -f 1)
+			path=$(echo $val | cut -d ":" -f 2)
+			echo "device: $device path: $path"
+			if [ -f "$path" ]; then
+				mount -o loop -t ext3 ${path} /home
+			else
+				colorize 031 "Can't find sebhome.img virtual disk image"
+			fi ;;
+	esac
+done
+
 # Hostname
 echo "Setting hostname to: $(colorize 033 $host_name)"
 /bin/hostname ${host_name}
@@ -33,6 +50,12 @@ echo "Setting hostname to: $(colorize 033 $host_name)"
 # Load dumped keymap
 echo "Loading keyboard map..."
 /sbin/loadkmap < /usr/share/kmap/default
+
+# Source all scripts specified in config file
+for script in ${run_scripts}; do
+	echo $(colorize 34 "Processing: $script")
+	${script}
+done
 
 echo ""
 colorize 035 "Welcome to SliTaz Embedded System"
