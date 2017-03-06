@@ -276,6 +276,7 @@ seb_os_release="$(cat /etc/slitaz-release)"
 EOT
 	
 	# Security check
+	chown -R 0.0 ${rootfs}
 	chmod 0600 ${rootfs}/etc/busybox.conf
 
 	# Rootfs archive
@@ -433,7 +434,7 @@ case "$1" in
 		cd ${rootfs}; find . -type f | sed s'/^.//'g
 		footer "Rootfs files: $(find . -type f | wc -l)" ;;
 	
-	emu)
+	-e|emu)
 		title "Emulating: $iso"
 		emulate ${work}/${iso} 
 		footer ;;

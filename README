@@ -1,7 +1,7 @@
 SEB - SliTaz Embedded OS
 ================================================================================
 
-Back to the root with this cmdline tool to build realy small SliTaz textmode 
+Back to the root with this cmdline tool to build realy small SliTaz text mode 
 system for hacking, learning and developing small Linux operating system.
 
 Seb builder will init a minimal set of files that you can customise at your
@@ -43,6 +43,8 @@ init command you can modify and add extra files in the embfs/ folder:
   # seb init
   # seb -p sqlite --add
   # seb build
+
+To get a list of commands, just run seb without arguments: $ seb
 
 
 Build process & environment
@@ -99,8 +101,9 @@ also a learning tool. Seb let you build sandbox os and rock solid web server.
   * examples/       Various fs and scripts examples
   * initfs/         Initial files used to create the system
   * seb             SliTaz Embedded operation system builder
+  * libseb.sh       Seb shared functions install on host and in seb OS
   * tools/          Various tools included or used to build an OS
-  * packages/       SliTaz Embedded packages
+  * packages/       SliTaz Embedded packages database
 
 We dont want to much automation, let people create ther own OS in there
 own way but provide some usefull function to help :-)
