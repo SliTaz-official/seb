@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+	<mime-type type="text/x-seb-package">
+		<comment>package SEB</comment>
+		<comment xml:lang="fr">paquet SEB</comment>
+		<sub-class-of type="application/x-shellscript"/>
+		<generic-icon name="text-x-script"/>
+		<magic priority="50">
+			<match value="# SliTaz Embedded package" type="string" offset="0"/>
+		</magic>
+	</mime-type>
+</mime-info>
