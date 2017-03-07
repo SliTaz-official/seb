@@ -32,8 +32,11 @@ for opt in $(cat /proc/cmdline); do
 			device=$(echo $val | cut -d ":" -f 1)
 			path=$(echo $val | cut -d ":" -f 2)
 			echo "device: $device path: $path"
-			if [ -f "$path" ]; then
-				mount -o loop -t ext3 ${path} /home
+			mountpoint=/media/$(basename $device)
+			mkdir ${mountpoint}
+			mount ${device} ${mountpoint}
+			if [ -f "${mountpoint}$path" ]; then
+				mount -o loop -t ext3 ${mountpoint}${path} /home
 			else
 				colorize 031 "Can't find sebhome.img virtual disk image"
 			fi ;;

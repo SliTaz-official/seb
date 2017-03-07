@@ -166,6 +166,7 @@ hosts:      files dns
 networks:   files
 EOT
 	check
+	mkdir -p ${rootfs}/etc/daemons
 }
 
 build() {
