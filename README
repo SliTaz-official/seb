@@ -70,6 +70,15 @@ use these directories to work:
   * sebpkgs/    The packages to install into the distro
 
 
+Rootfs & rootfs.xz
+--------------------------------------------------------------------------------
+The rootfs/ folder congtain the full system tree and the rootfs.xz in a cpio 
+archive compressed with xz. In the build process, the files and the packages
+are installed in the rootfs first, then the customizalble files in the sebfs/
+folder are copied in the system tree, so any file can be overwrited and you
+have full control on all files :-)
+
+
 Linux kernel and modules
 -------------------------------------------------------------------------------
 By default seb will use the running kernel and a custom one can be used with

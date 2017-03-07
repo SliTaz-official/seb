@@ -4,5 +4,5 @@ desc="SQLite3 Database engine"
 deps=""
 
 seb_install() {
-	install_files "/usr/bin/sqlite3" "/usr/lib/libsqlite3*" "/lib/libdl*"
+	install_files "/usr/bin/sqlite3" "/usr/lib/libsqlite3*"
 }

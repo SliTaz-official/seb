@@ -196,11 +196,12 @@ build() {
 	[ ! -d "$sebfs" ] && init
 
 	# GNU libc before chroot /bin/busybox --install + name resolution
-	for lib in /lib/libm[-.]* /lib/libc[-.]* /lib/ld-* /lib/libpthread*; do
+	for lib in /lib/libm[-.]* /lib/libc[-.]*; do
 		echo -n "Installing: $lib"
 		cp -a ${lib} ${rootfs}/lib && check
 	done
-	install_files "/lib/libnss_dns*" "/lib/libnss_file*" "/lib/libresolv*"
+	install_files "/lib/ld-*" "/lib/libnss_dns*" "/lib/libnss_file*" \
+		 "/lib/libresolv*" "/lib/libpthread*" "/lib/libdl*"
 
 	# Busybox applets
 	action "Installing: busybox"
@@ -284,11 +285,11 @@ EOT
 	chown -R 0.0 ${rootfs}
 	chmod 0600 ${rootfs}/etc/busybox.conf
 
-	# Rootfs archive
+	# Rootfs archive: lzma e -si -so
 	action "Creating the initramfs..."
 	cd ${rootfs}
-	find . -print | cpio -o -H newc | lzma e -si -so \
-		> ${rootiso}/boot/rootfs.gz 2>/dev/null
+	find . -print | cpio -o -H newc | xz -9 --format=lzma \
+		> ${rootiso}/boot/rootfs.xz 2>/dev/null
 	check
 
 	# Linux Kernel
@@ -305,7 +306,7 @@ display display.txt
 default seb
 label seb
 	kernel /boot/bzImage
-	append initrd=/boot/rootfs.gz rw root=/dev/null rdinit=/sbin/init loglevel=5
+	append initrd=/boot/rootfs.xz rw root=/dev/null rdinit=/sbin/init
 implicit 0
 prompt 1
 timeout 40
