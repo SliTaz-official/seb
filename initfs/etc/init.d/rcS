@@ -15,7 +15,6 @@ echo "Mounting filesystems..."
 # Populate /dev + config hotplug
 echo "Populating /dev and config hotplug helper..."
 /bin/touch /dev/mdev.log; /sbin/mdev -s
-echo "/sbin/mdev" >/proc/sys/kernel/hotplug
 
 # Mount vdisk in Qemu or vdisk=/dev/sdb1:/path/to/sebhome.img
 if blkid | fgrep -q "SebOShome"; then

@@ -294,7 +294,8 @@ EOT
 
 	# Linux Kernel
 	echo -n "Copying the Linux kernel..."
-	cp ${linux} ${rootiso}/boot/bzImage; check
+	cp ${linux} ${rootiso}/boot/bzImage
+	info 035 "$(du -mh $linux | awk '{print $1}')"
 
 	# Bootloader
 	echo -n "Copying the bootloader (isolinux)..."
