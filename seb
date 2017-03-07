@@ -116,8 +116,11 @@ emulate() {
 install_files() {
 	for file in ${@} ; do
 		path=$(dirname $file)
+		if [ ! -d "${rootfs}${path}" ]; then
+			mkdir -p ${rootfs}${path}
+		fi
 		echo -n "Installing: $file"
-		cp -a ${file} ${rootfs}${path} && check
+		cp -a ${file} ${rootfs}${path}; check
 	done
 }
 

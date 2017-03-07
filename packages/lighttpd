@@ -5,11 +5,19 @@ deps=""
 
 seb_install() {
 	install_files "/usr/sbin/lighttpd" "/usr/lib/libpcre.so*"
-	mkdir -p ${rootfs}/etc/lighttpd
 	
 	# Configs
-	cp -f /etc/lighttpd/lighttpd.conf ${rootfs}/etc/lighttpd
-	cp -f /etc/lighttpd/vhosts.conf ${rootfs}/etc/lighttpd
+	mkdir -p ${rootfs}/etc/lighttpd
+	cp -f ${tools}/lighttpd.conf ${rootfs}/etc/lighttpd
+	
+	# Default modules
+	install_files \
+		"/usr/lib/lighttpd/mod_access*" \
+		"/usr/lib/lighttpd/mod_alias.so" \
+		"/usr/lib/lighttpd/mod_cgi.so" \
+		"/usr/lib/lighttpd/mod_dirlisting.so" \
+		"/usr/lib/lighttpd/mod_indexfile.so" \
+		"/usr/lib/lighttpd/mod_userdir.so"
 	
 	# Daemon start function
 	cat > ${rootfs}/etc/daemons/lighttpd << EOT
