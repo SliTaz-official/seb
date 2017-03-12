@@ -1,8 +1,8 @@
 #!/bin/sh
 #
 # seb.cgi: SliTaz Embedded Builder CGI interface. Invoking seb to build
-# a custom OS in the current dir or the one set in work= config variable.
-# The webserver must be run by root, so we use Busyboy httpd to serv on
+# a custom OS in the current dir or the one set in the work= config variable.
+# The webserver must be run by root, so we use Busybox httpd to serve on
 # a custom port and for localhost only (see seb httpd.conf).
 #
 # Example: # cd path/to/os; seb -w
@@ -14,7 +14,7 @@ work="$(pwd)"
 export output=html
 . /lib/libseb.sh
 
-# Everything preformated, for a cmdline style output
+# Everything preformatted for a cmdline style output
 cat << EOT
 <!DOCTYPE html>
 <html>
@@ -53,7 +53,7 @@ Rootfs size  : <span class='info'>$(du -sh $work/rootfs | awk '{print $1}')</spa
 Rootiso size : <span class='info'>$(du -sh $work/rootiso | awk '{print $1}')</span>
 EOT
 		else
-			echo "Seb OS      : No build yet!"
+			echo "Seb OS      : Not built yet!"
 		fi ;;
 esac
 
