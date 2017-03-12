@@ -17,9 +17,20 @@ done
 
 # Exit if command returns 1
 check() {
-	case "$?" in
-		0) info 32 "Done" ;;
-		1) colorize 31 "--> Error" && exit 1 ;;
+	local code="$?"
+	case "$output" in
+		html)
+			case "$code" in
+				0) echo " <span style='color: green;'>Done</span>" ;;
+				1) 
+					echo " <span style='color: red;'>--> Error</span>" 
+					exit 1 ;;
+			esac ;;
+		*)
+			case "$code" in
+				0) info 32 "Done" ;;
+				1) colorize 31 "--> Error" && exit 1 ;;
+			esac ;;
 	esac
 }
 
@@ -41,7 +52,10 @@ get_cols() {
 indent() {
 	local in="$1"
 	shift
-	echo -e "\033["${in}"G $@";
+	case "$output" in
+		html) echo ": $@" ;;
+		*) echo -e "\033["${in}"G $@" ;;
+	esac
 }
 
 # Display a bold message
@@ -56,27 +70,43 @@ boldify() {
 colorize() {
 	: ${color=$1}
 	shift
-	case "$color" in
-		0*) echo -e "\\033[${color:-38}m$@\\033[39m" ;;
-		*)  echo -e "\\033[1;${color:-38}m$@\\033[0;39m" ;;
+	case "$output" in
+		html|raw) echo "$@" ;;
+		*) 
+			case "$color" in
+				0*) echo -e "\\033[${color:-38}m$@\\033[39m" ;;
+				*)  echo -e "\\033[1;${color:-38}m$@\\033[0;39m" ;;
+			esac ;;
 	esac; unset color
 }
 
 # Last command status
 status() {
 	local code="$?"
-	case "$code" in
-		0) indent $(($(get_cols) - 11)) "[ $(colorize 32 'Done') ]" ;;
-		1) indent $(($(get_cols) - 11)) "[ $(colorize 31 'Fail') ]" ;;
+	case "$output" in
+		html)
+			case "$code" in
+				0) echo " <span style='color: green;'>Done</span>" ;;
+				1) echo " <span style='color: red;'>Fail</span>" ;;
+			esac ;;
+		*)
+			case "$code" in
+				0) info 32 "Done" ;;
+				1) info 31 "Fail" ;;
+			esac ;;
 	esac
 }
 
 # Print info a la status way: info [color] [content]
 info() {
 	local info="$2"
-	local char="$(echo $info | wc -L)"
-	local in=$((7 + ${char}))
-	indent $(($(get_cols) - ${in})) "[ $(colorize $1 $info) ]"
+	case "$output" in
+		html) echo " <span class='info'>$info</span>" ;;
+		*)
+			local char="$(echo $info | wc -L)"
+			local in=$((7 + ${char}))
+			indent $(($(get_cols) - ${in})) "[ $(colorize $1 $info) ]" ;;
+	esac
 }
 
 # Line separator

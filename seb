@@ -15,6 +15,7 @@ unset status get_cols separator colorize boldify
 [ "$work" ]  || work="$(pwd)"
 [ "$iso" ]   || iso="seb-os-$(date '+%Y%m%d').iso"
 [ "$linux" ] || linux="/boot/vmlinuz-$(uname -r)"
+[ "$port" ] || port="8940"
 
 rootfs="$work/rootfs"
 rootiso="$work/rootiso"
@@ -67,12 +68,14 @@ $(boldify "Commands:")
   -l  lsfs       List all files in rootfs (-type f)
   -v  vdisk      Create, mount or unmount a virtual disk
   -e  emu        Emulate ISO image with Qemu
+  -w  web        Start seb graphical web interface
       env        Print current seb environment
 
 $(boldify "Options:")
   --work=        Path to build directory
   --iso=         Specify SliTaz Embedded ISO image name
   --linux=       Path to a custom Linux kernel
+  --port=        Httpd port for the web interface
   --all          Clean all files including sebfs
   --emu          Emulate ISO image after build
   --check        Check a virtual disk image
@@ -204,7 +207,7 @@ build() {
 		 "/lib/libresolv*" "/lib/libpthread*" "/lib/libdl*"
 
 	# Busybox applets
-	action "Installing: busybox"
+	echo -n "Installing: busybox"
 	cp -a /bin/busybox ${rootfs}/bin
 	chroot ${rootfs} /bin/busybox --install -s; check
 
@@ -221,7 +224,7 @@ build() {
 	dumpkmap > ${rootfs}/usr/share/kmap/default; check
 	
 	# Kilo editor (20K) with syntax highlight and search (Thanks Paul :-)
-	action "Installing: kilo text editor"
+	echo -n "$(colorize 034 'Installing: kilo text editor')"
 	cp -a ${tools}/kilo ${rootfs}/usr/bin; check
 	
 	# Ncursesw && dialog for sebos and additional tools
@@ -233,7 +236,7 @@ build() {
 	# /lib/libseb.sh & sebos config tool
 	echo -n "Installing: /lib/libseb.sh"
 	cp ${libseb} ${rootfs}/lib; check
-	action "Installing: sebos config tool"
+	echo -n "$(colorize 034 'Installing: sebos config tool')"
 	cp ${tools}/sebos ${rootfs}/usr/bin; check
 	
 	# httphelper.sh for amazing CGI/Shell functions
@@ -286,7 +289,7 @@ EOT
 	chmod 0600 ${rootfs}/etc/busybox.conf
 
 	# Rootfs archive: lzma e -si -so
-	action "Creating the initramfs..."
+	echo -n "$(colorize 034 'Creating the initramfs...')"
 	cd ${rootfs}
 	find . -print | cpio -o -H newc | xz -9 --format=lzma \
 		> ${rootiso}/boot/rootfs.xz 2>/dev/null
@@ -381,7 +384,7 @@ vdisk_hanler() {
 	else
 		echo "Creating virtual disk image..."
 		dd if=/dev/zero of=${vdisk} bs=1M count=${vsize}
-		action "Creating ext3 filesystem..."; echo
+		colorize 034 "Creating ext3 filesystem..."
 		mkfs.ext3 -L "SebOShome" ${vdisk}
 	fi
 	
@@ -445,6 +448,26 @@ case "$1" in
 		title "Emulating: $iso"
 		emulate ${work}/${iso} 
 		footer ;;
+	
+	-w|web)
+		pid=$(ps | grep 8940 | grep -v grep | awk '{print $1}')
+		if [ "$stop" ] && [ "$pid" ]; then
+			echo -n "Stopping Web interface... pid:"
+			kill ${pid}; info 035 "$pid"; exit 0
+		fi
+		# Need the cgi script in server root
+		if [ ! -f "$work/seb.cgi" ]; then
+			cp ${tools}/web/seb.cgi .
+		fi
+		if [ "$pid" ]; then
+			echo -n "Web interface is already running with pid:"
+			info 035 "$pid"
+		else
+			echo -n "Starting web interface on port:"; info 035 "$port"
+			httpd -p ${port} -u 0:0 -h ${work} \
+				-c ${tools}/web/httpd.conf
+		fi 
+		tazweb --notoolbar http://localhost:${port}/ & ;;
 
 	env)
 		title "SEB environment"
@@ -465,8 +488,12 @@ EOT
 		footer ;;
 	
 	-t|testsuite)
-		# Development purpose
-		${tools}/libseb.sh ;;
+		# Development/debug purpose
+		if [ -x "./libseb.sh" ]; then
+			./libseb.sh
+		else
+			/lib/libseb.sh 
+		fi ;;
 
 	*) help ;;
 
