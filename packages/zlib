@@ -1,0 +1,8 @@
+# SliTaz Embedded package
+
+desc="Zlib compression library"
+deps=""
+
+seb_install() {
+	install_files "/usr/lib/libz.so*"
+}

@@ -1,0 +1,8 @@
+# SliTaz Embedded package
+
+desc="Perl 5 Compatible Regular Expression"
+deps=""
+
+seb_install() {
+	install_files "/usr/lib/libpcre.so*"
+}
