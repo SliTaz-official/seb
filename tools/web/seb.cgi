@@ -10,9 +10,10 @@
 . /usr/lib/slitaz/httphelper.sh
 header
 
-work="$(pwd)"
-export output=html
 . /lib/libseb.sh
+work="$(pwd)"
+packages="/usr/share/seb/packages"
+export output=html
 
 # Everything preformatted for a cmdline style output
 cat << EOT
@@ -22,8 +23,8 @@ cat << EOT
 	<meta charset="utf-8" />
 	<title>SliTaz Embedded Builder</title>
 	<style type="text/css">
-		h1 { color: #aaa; font-size: 140%; } .info { color: #800057; }
-		hr { border: 1px solid #ddd; }
+		h1 { color: #888; font-size: 140%; } .info { color: #800057; }
+		hr { border: 1px solid #ddd; } .pkg { color: #800057; padding: 0 20px 0 0; }
 	</style>
 </head>
 <h1>SliTaz Embedded Builder</h1>
@@ -41,11 +42,20 @@ case " $(GET) " in
 
 	*\ help\ *)      seb | sed '1,2d' ;;
 	*\ build\ *)     seb -b ;;
-	*\ packages\ *)  seb -p ;;
 	*\ emulate\ *)   seb -e ;;
 	*\ debug\ *)     seb env; seb testsuite ;;
+	*\ packages\ *)
+		title "Seb packages"
+		IFS=":"
+		echo "<table>"
+		ls ${packages} | while read pkg; do
+			. ${packages}/${pkg}
+			echo "<tr><td class='pkg'>$pkg</td><td>$desc</td></tr>"
+		done; unset IFS
+		echo "</table><hr />" ;;
 	
 	*)
+		title "Seb summary"
 		echo "Work path   : <span class='info'>$work</span>"
 		if [ -d "$work/rootfs" ]; then
 			cat << EOT
@@ -54,7 +64,7 @@ Rootiso size : <span class='info'>$(du -sh $work/rootiso | awk '{print $1}')</sp
 EOT
 		else
 			echo "Seb OS      : Not built yet!"
-		fi ;;
+		fi; footer ;;
 esac
 
 cat << EOT

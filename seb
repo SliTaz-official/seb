@@ -12,6 +12,8 @@ unset status get_cols separator colorize boldify
 # --iso --work --linux can be set in config file or from cmdline
 [ -f "build.conf" ] && . build.conf
 
+[ "$work" ]  || work="$(pwd)"
+
 rootfs="$work/rootfs"
 rootiso="$work/rootiso"
 sebfs="$work/sebfs"
@@ -24,7 +26,6 @@ tools="/usr/share/seb/tools"
 initfs="/usr/share/seb/initfs"
 packages="/usr/share/seb/packages"
 
-[ "$work" ]  || work="$(pwd)"
 [ "$iso" ]   || iso="seb-os-$(date '+%Y%m%d').iso"
 [ "$linux" ] || linux="$tools/bzImage-4.9.13"
 [ "$port" ] || port="8940"
@@ -467,7 +468,7 @@ case "$1" in
 			httpd -p ${port} -u 0:0 -h ${work} \
 				-c ${tools}/web/httpd.conf
 		fi 
-		tazweb --notoolbar http://localhost:${port}/ & ;;
+		tazweb --small --raw http://localhost:${port}/ & ;;
 
 	env)
 		title "SEB environment"
