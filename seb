@@ -225,7 +225,7 @@ build() {
 	dumpkmap > ${rootfs}/usr/share/kmap/default; check
 	
 	# Kilo editor (20K) with syntax highlight and search (Thanks Paul :-)
-	echo -n "$(colorize 034 'Installing: kilo text editor')"
+	echo -n "$(colorize 033 'Installing: kilo text editor')"
 	cp -a ${tools}/kilo ${rootfs}/usr/bin; check
 	
 	# Ncursesw && dialog for sebos and additional tools
@@ -237,7 +237,7 @@ build() {
 	# /lib/libseb.sh & sebos config tool
 	echo -n "Installing: /lib/libseb.sh"
 	cp ${libseb} ${rootfs}/lib; check
-	echo -n "$(colorize 034 'Installing: sebos config tool')"
+	echo -n "$(colorize 033 'Installing: sebos config tool')"
 	cp ${tools}/sebos ${rootfs}/usr/bin; check
 	
 	# httphelper.sh for amazing CGI/Shell functions
@@ -290,7 +290,7 @@ EOT
 	chmod 0600 ${rootfs}/etc/busybox.conf
 
 	# Rootfs archive: lzma e -si -so
-	echo -n "$(colorize 034 'Creating the initramfs...')"
+	echo -n "$(colorize 033 'Creating the initramfs...')"
 	cd ${rootfs}
 	find . -print | cpio -o -H newc | xz -9 --format=lzma \
 		> ${rootiso}/boot/rootfs.xz 2>/dev/null
@@ -385,7 +385,7 @@ vdisk_hanler() {
 	else
 		echo "Creating virtual disk image..."
 		dd if=/dev/zero of=${vdisk} bs=1M count=${vsize}
-		colorize 034 "Creating ext3 filesystem..."
+		colorize 033 "Creating ext3 filesystem..."
 		mkfs.ext3 -L "SebOShome" ${vdisk}
 	fi
 	
@@ -456,10 +456,10 @@ case "$1" in
 			echo -n "Stopping Web interface... pid:"
 			kill ${pid}; info 035 "$pid"; exit 0
 		fi
-		# Need the cgi script in server root
-		if [ ! -f "$work/seb.cgi" ]; then
-			cp ${tools}/web/seb.cgi .
-		fi
+		
+		# Need the last cgi script in server root
+		cp -f ${tools}/web/seb.cgi .
+		
 		if [ "$pid" ]; then
 			echo -n "Web interface is already running with pid:"
 			info 035 "$pid"
