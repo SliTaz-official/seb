@@ -27,12 +27,12 @@ initfs="/usr/share/seb/initfs"
 packages="/usr/share/seb/packages"
 
 [ "$iso" ]   || iso="seb-os-$(date '+%Y%m%d').iso"
-[ "$linux" ] || linux="$tools/bzImage-4.9.13"
-[ "$port" ] || port="8940"
+[ "$linux" ] || linux="$tools/bzImage"
+[ "$port" ]  || port="8940"
 
 # Working from source tree
-[ -d "tools" ]  && tools="$(pwd)/tools"
-[ -d "initfs" ] && initfs="$(pwd)/initfs"
+[ -d "tools" ]    && tools="$(pwd)/tools"
+[ -d "initfs" ]   && initfs="$(pwd)/initfs"
 [ -d "packages" ] && packages="$(pwd)/packages"
 
 # Source libseb.sh (overwrite libtaz.sh function)
