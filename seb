@@ -63,7 +63,7 @@ $(boldify "Commands:")
   -h  help       Display this short built-in help
   -i  init       Create base files to customize
   -b  build      Generate a distribution (initramfs & iso)
-  -p  packages   Handle packages: --list --add
+  -p  packages   Handle packages: list and --add
   -g  geniso     Re-generate the ISO image
   -c  clean      Remove all SEB generated files
   -l  lsfs       List all files in rootfs (-type f)
@@ -80,6 +80,7 @@ $(boldify "Options:")
   --all          Clean all files including sebfs
   --emu          Emulate ISO image after build
   --check        Check a virtual disk image
+  --stop         Stop the web interface
 
 EOT
 }
