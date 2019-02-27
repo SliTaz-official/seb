@@ -126,7 +126,7 @@ footer() {
 }
 
 # Testsuite
-if [ $(basename $0) == "libseb.sh" ]; then
+if [ $(basename $0) = "libseb.sh" ]; then
 	title "libseb.sh title()"
 	echo -n "Checking status() 0"; status
 	echo -n "Checking status() 1"; ls /a/a 2>/dev/null; status
